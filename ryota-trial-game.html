@@ -1271,6 +1271,639 @@
         font-size: 1.4rem;
       }
     }
+
+    /* ===== UI 2.0: desktop / mobile-landscape split ===== */
+    .body {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+      align-items: start;
+      grid-template-columns: minmax(240px, 0.9fr) minmax(0, 1.85fr) minmax(250px, 1fr);
+      grid-template-areas: none;
+    }
+
+    .ui-panel,
+    .center-column {
+      min-width: 0;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .left-panel .economy,
+    .left-panel .cast,
+    .left-panel .stats,
+    .left-panel .sentence-panel,
+    .center-column .scene,
+    .center-column .action-board,
+    .center-column .prison-stage,
+    .center-column .choices,
+    .center-column .foot,
+    .right-panel .special,
+    .right-panel .log-panel {
+      grid-area: auto;
+    }
+
+    .ui-panel {
+      border: 1px solid #c8b08e;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #fffdf8, #f3e9d9);
+      padding: 10px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+
+    body.mode-prison .ui-panel {
+      background: linear-gradient(180deg, #222b3a, #1b2331);
+      border-color: #41506d;
+      box-shadow: inset 0 1px 0 rgba(183, 203, 247, 0.08);
+    }
+
+    .left-panel .economy {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .left-panel .cast {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .left-panel .stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .left-panel .sentence-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .center-column {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .panel-tools {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .panel-toggle {
+      text-align: center;
+      font-size: 0.82rem;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border-color: #b4946e;
+      background: linear-gradient(180deg, #fff6ea, #f1e0c8);
+      color: #5d3a1a;
+      font-weight: 700;
+    }
+
+    body.mode-prison .panel-toggle {
+      border-color: #576d95;
+      background: linear-gradient(180deg, #334560, #27364d);
+      color: #e5efff;
+    }
+
+    .center-stage {
+      position: relative;
+      min-height: clamp(240px, 34vh, 360px);
+      border: 2px solid #bf9e73;
+      border-radius: 13px;
+      overflow: hidden;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.65),
+        inset 0 -35px 55px rgba(60, 28, 4, 0.1);
+      background: #e7dcc8;
+    }
+
+    .stage-backdrop {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        radial-gradient(circle at 50% 15%, rgba(255, 248, 229, 0.7), rgba(255, 248, 229, 0) 32%),
+        linear-gradient(180deg, #ceb287 0%, #b68f5f 35%, #8a683f 100%);
+    }
+
+    .center-stage::before {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 44%;
+      z-index: 2;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(95, 56, 22, 0.14) 0,
+          rgba(95, 56, 22, 0.14) 24px,
+          rgba(140, 87, 42, 0.16) 24px,
+          rgba(140, 87, 42, 0.16) 48px
+        ),
+        linear-gradient(180deg, rgba(133, 95, 60, 0), rgba(85, 51, 20, 0.42));
+      pointer-events: none;
+    }
+
+    .stage-character {
+      position: absolute;
+      z-index: 3;
+      width: 98px;
+      height: 136px;
+      border-radius: 14px;
+      border: 1px solid rgba(47, 29, 15, 0.55);
+      background: linear-gradient(180deg, #d7d7d7, #7c7c7c);
+      box-shadow: 0 8px 16px rgba(20, 10, 3, 0.25);
+      transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+      overflow: hidden;
+    }
+
+    .stage-character::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      width: 34px;
+      height: 34px;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      border: 2px solid rgba(22, 12, 6, 0.35);
+      background:
+        radial-gradient(circle at 52% 36%, #f7dfc0 0%, #dfb991 62%, #a77756 100%);
+    }
+
+    .stage-character::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 18px;
+      width: 58px;
+      height: 72px;
+      transform: translateX(-50%);
+      border-radius: 16px 16px 10px 10px;
+      background: linear-gradient(180deg, rgba(33, 47, 65, 0.92), rgba(19, 28, 41, 0.95));
+      border: 1px solid rgba(214, 232, 255, 0.16);
+    }
+
+    .stage-character.has-image::before,
+    .stage-character.has-image::after {
+      display: none;
+    }
+
+    .stage-label {
+      position: absolute;
+      left: 50%;
+      bottom: 4px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      padding: 2px 7px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      color: #fff7ea;
+      background: rgba(32, 18, 8, 0.7);
+      border: 1px solid rgba(250, 226, 189, 0.42);
+      z-index: 6;
+    }
+
+    .stage-judge {
+      top: 7%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 112px;
+      height: 142px;
+    }
+
+    .stage-lawyer {
+      left: 12%;
+      bottom: 25%;
+      background: linear-gradient(180deg, #d7dbeb, #7f8ba9);
+    }
+
+    .stage-prosecutor {
+      right: 12%;
+      bottom: 25%;
+      background: linear-gradient(180deg, #e7cdc8, #a0716a);
+    }
+
+    .stage-witness {
+      left: 29%;
+      top: 29%;
+      width: 86px;
+      height: 126px;
+      background: linear-gradient(180deg, #ddd4be, #93806a);
+      filter: saturate(0.92);
+      z-index: 2;
+    }
+
+    .stage-defendant {
+      left: 50%;
+      bottom: 9%;
+      transform: translateX(-50%);
+      width: 124px;
+      height: 152px;
+      border-width: 2px;
+      background: linear-gradient(180deg, #dce6f6, #7893c4);
+      box-shadow: 0 10px 18px rgba(20, 10, 3, 0.3);
+    }
+
+    .stage-character.active {
+      animation: stagePulse 0.5s ease;
+    }
+
+    .stage-character.tone-ok {
+      box-shadow: 0 0 0 3px rgba(88, 168, 117, 0.5), 0 10px 18px rgba(20, 10, 3, 0.3);
+    }
+
+    .stage-character.tone-warn {
+      box-shadow: 0 0 0 3px rgba(193, 145, 52, 0.52), 0 10px 18px rgba(20, 10, 3, 0.3);
+    }
+
+    .stage-character.tone-bad {
+      box-shadow: 0 0 0 3px rgba(183, 65, 65, 0.58), 0 10px 18px rgba(20, 10, 3, 0.3);
+    }
+
+    @keyframes stagePulse {
+      0% { transform: translateX(var(--base-x, 0)) scale(1); filter: brightness(1); }
+      45% { transform: translateX(var(--base-x, 0)) scale(1.04); filter: brightness(1.15); }
+      100% { transform: translateX(var(--base-x, 0)) scale(1); filter: brightness(1); }
+    }
+
+    .stage-judge,
+    .stage-defendant {
+      --base-x: -50%;
+    }
+
+    body.mode-prison .center-stage {
+      border-color: #4a5d7d;
+      background: #1f2734;
+      box-shadow:
+        inset 0 1px 0 rgba(200, 222, 255, 0.18),
+        inset 0 -42px 62px rgba(7, 11, 19, 0.6);
+    }
+
+    body.mode-prison .stage-backdrop {
+      background:
+        radial-gradient(circle at 50% 14%, rgba(166, 186, 230, 0.22), rgba(166, 186, 230, 0) 32%),
+        linear-gradient(180deg, #2d3647 0%, #222a39 46%, #181f2b 100%);
+    }
+
+    body.mode-prison .center-stage::before {
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(196, 216, 255, 0.28) 0,
+          rgba(196, 216, 255, 0.28) 7px,
+          rgba(35, 44, 59, 0.06) 7px,
+          rgba(35, 44, 59, 0.06) 28px
+        ),
+        linear-gradient(180deg, rgba(13, 18, 28, 0.05), rgba(8, 13, 21, 0.55));
+      height: 100%;
+    }
+
+    body.mode-prison .stage-lawyer,
+    body.mode-prison .stage-prosecutor,
+    body.mode-prison .stage-witness,
+    body.mode-prison .stage-judge {
+      opacity: 0.3;
+      filter: grayscale(1);
+    }
+
+    body.mode-prison .stage-defendant {
+      opacity: 1;
+      filter: none;
+    }
+
+    body.mode-prison .left-panel .economy,
+    body.mode-prison .left-panel .stats,
+    body.mode-prison .left-panel .sentence-panel {
+      display: grid;
+    }
+
+    body.mode-prison .left-panel .cast {
+      display: grid;
+    }
+
+    body.mode-prison .right-panel .special {
+      display: none;
+    }
+
+    .center-column .scene {
+      border-width: 2px;
+      font-size: clamp(1.02rem, 1.8vw, 1.25rem);
+      line-height: 1.65;
+      font-weight: 800;
+      min-height: 106px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    }
+
+    .center-column .action-board {
+      border-width: 2px;
+    }
+
+    .right-panel .special,
+    .right-panel .log-panel {
+      grid-area: auto;
+    }
+
+    .mobile-tabbar {
+      display: none;
+      gap: 6px;
+      padding: 6px;
+      border: 1px solid #bfa47d;
+      border-radius: 10px;
+      background: rgba(255, 249, 238, 0.92);
+      backdrop-filter: blur(6px);
+    }
+
+    .mobile-tab-btn {
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      border-radius: 8px;
+      padding: 10px 8px;
+      border-color: #b08d62;
+    }
+
+    .mobile-tab-btn.active {
+      background: linear-gradient(180deg, #8f3232, #6c2525);
+      border-color: #5e1f1f;
+      color: #fff;
+    }
+
+    .rotate-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      background: rgba(14, 18, 27, 0.9);
+      z-index: 1500;
+      padding: 16px;
+    }
+
+    .rotate-card {
+      width: min(440px, 100%);
+      border: 1px solid rgba(171, 193, 238, 0.45);
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(35, 47, 67, 0.96), rgba(20, 30, 45, 0.95));
+      color: #eaf1ff;
+      padding: 18px 20px;
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    .rotate-card strong {
+      display: block;
+      font-size: 1.35rem;
+      letter-spacing: 0.07em;
+      margin-bottom: 8px;
+    }
+
+    .rotate-card p {
+      margin: 0;
+      font-size: 0.98rem;
+      line-height: 1.6;
+      letter-spacing: 0.02em;
+    }
+
+    body.ui-desktop .mobile-tabbar {
+      display: none !important;
+    }
+
+    body.ui-desktop .body {
+      grid-template-columns: minmax(240px, 0.9fr) minmax(0, 1.85fr) minmax(250px, 1fr);
+    }
+
+    body.ui-desktop.pc-left-collapsed .left-panel {
+      display: none;
+    }
+
+    body.ui-desktop.pc-right-collapsed .right-panel {
+      display: none;
+    }
+
+    body.ui-desktop.pc-left-collapsed .body {
+      grid-template-columns: minmax(0, 1.95fr) minmax(250px, 1fr);
+    }
+
+    body.ui-desktop.pc-right-collapsed .body {
+      grid-template-columns: minmax(240px, 0.9fr) minmax(0, 2.2fr);
+    }
+
+    body.ui-desktop.pc-left-collapsed.pc-right-collapsed .body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    body.ui-desktop.pc-left-collapsed .panel-tools,
+    body.ui-desktop.pc-right-collapsed .panel-tools {
+      justify-content: space-between;
+    }
+
+    body.ui-mobile-landscape {
+      padding: 0;
+      place-items: stretch;
+    }
+
+    body.ui-mobile-landscape .court {
+      width: 100%;
+      min-height: 100vh;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+    }
+
+    body.ui-mobile-landscape .head {
+      padding: 9px 12px 8px;
+    }
+
+    body.ui-mobile-landscape h1 {
+      font-size: 1.14rem;
+      letter-spacing: 0.03em;
+    }
+
+    body.ui-mobile-landscape .meta {
+      margin-top: 3px;
+      font-size: 0.75rem;
+      letter-spacing: 0.01em;
+    }
+
+    body.ui-mobile-landscape .location-tag {
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      margin-left: 6px;
+    }
+
+    body.ui-mobile-landscape .body {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 8px 8px 68px;
+      grid-template-columns: 1fr;
+    }
+
+    body.ui-mobile-landscape #centerColumn { order: 1; }
+    body.ui-mobile-landscape #leftPanel { order: 2; }
+    body.ui-mobile-landscape #rightPanel { order: 3; }
+    body.ui-mobile-landscape #mobileTabbar { order: 4; }
+
+    body.ui-mobile-landscape .ui-panel {
+      border-radius: 10px;
+      padding: 8px;
+      gap: 8px;
+    }
+
+    body.ui-mobile-landscape .panel-tools {
+      display: none;
+    }
+
+    body.ui-mobile-landscape .center-stage {
+      min-height: 190px;
+      border-radius: 10px;
+    }
+
+    body.ui-mobile-landscape .stage-judge {
+      width: 86px;
+      height: 110px;
+    }
+
+    body.ui-mobile-landscape .stage-defendant {
+      width: 96px;
+      height: 126px;
+      bottom: 6%;
+    }
+
+    body.ui-mobile-landscape .stage-lawyer,
+    body.ui-mobile-landscape .stage-prosecutor {
+      width: 74px;
+      height: 104px;
+      bottom: 21%;
+    }
+
+    body.ui-mobile-landscape .stage-witness {
+      width: 70px;
+      height: 96px;
+      left: 26%;
+    }
+
+    body.ui-mobile-landscape .stage-label {
+      font-size: 0.58rem;
+      padding: 2px 6px;
+    }
+
+    body.ui-mobile-landscape .scene {
+      min-height: 90px;
+      font-size: 0.93rem;
+      padding: 10px;
+      border-width: 1px;
+    }
+
+    body.ui-mobile-landscape .action-screen {
+      min-height: 48px;
+      font-size: 0.96rem;
+    }
+
+    body.ui-mobile-landscape .choices button,
+    body.ui-mobile-landscape .special button {
+      padding: 9px 10px;
+      font-size: 0.9rem;
+    }
+
+    body.ui-mobile-landscape .foot {
+      gap: 8px;
+      justify-content: space-between;
+    }
+
+    body.ui-mobile-landscape #nextBtn,
+    body.ui-mobile-landscape .primary {
+      min-width: 124px;
+      font-size: 0.9rem;
+      padding: 9px 10px;
+    }
+
+    body.ui-mobile-landscape .stats {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    body.ui-mobile-landscape .cast {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body.ui-mobile-landscape .cast-card {
+      min-height: 56px;
+      padding: 6px;
+    }
+
+    body.ui-mobile-landscape .portrait {
+      width: 36px;
+      height: 36px;
+    }
+
+    body.ui-mobile-landscape .portrait::before {
+      top: -3px;
+      left: 5px;
+      width: 22px;
+      height: 10px;
+    }
+
+    body.ui-mobile-landscape .portrait::after {
+      width: 24px;
+      left: 5px;
+    }
+
+    body.ui-mobile-landscape .cast-text b {
+      font-size: 0.72rem;
+    }
+
+    body.ui-mobile-landscape .cast-text span {
+      font-size: 0.9rem;
+    }
+
+    body.ui-mobile-landscape .mobile-tabbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1300;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      padding: 7px calc(8px + env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom)) calc(8px + env(safe-area-inset-left));
+      background: rgba(249, 239, 225, 0.96);
+      box-shadow: 0 -8px 22px rgba(43, 24, 8, 0.2);
+    }
+
+    body.mode-prison.ui-mobile-landscape .mobile-tabbar {
+      background: rgba(27, 36, 52, 0.95);
+      box-shadow: 0 -8px 22px rgba(0, 0, 0, 0.38);
+      border-top-color: #425572;
+    }
+
+    body.mode-prison.ui-mobile-landscape .mobile-tab-btn {
+      border-color: #556b90;
+      background: linear-gradient(180deg, #2f415f, #23354d);
+      color: #e7efff;
+    }
+
+    body.mode-prison.ui-mobile-landscape .mobile-tab-btn.active {
+      border-color: #6f86b4;
+      background: linear-gradient(180deg, #46618b, #344f75);
+    }
+
+    body.ui-mobile-portrait .court {
+      display: none;
+    }
+
+    body.ui-mobile-portrait .rotate-overlay {
+      display: grid;
+    }
   </style>
 </head>
 <body>
@@ -1281,135 +1914,168 @@
     </header>
 
     <section class="body">
-      <div class="economy">
-        <div class="wallet">
-          <strong>資金・進行状況</strong>
-          <div class="money-main"><span id="moneyNum">0</span> 円</div>
-          <div class="money-meta">累計プレイ: <span id="playNum">0</span> / 称号: <span id="rankNum">見習い遅刻者</span></div>
-        </div>
-        <div class="save-tools">
-          <strong>保存ツール</strong>
-          <div class="save-grid">
-            <button id="saveRunBtn">進行を保存</button>
-            <button id="loadRunBtn">進行を読込</button>
-            <button id="exportBtn">バックアップ出力</button>
-            <button id="importBtn">バックアップ読込</button>
-            <button id="soundBtn" class="wide">効果音: ON</button>
+      <aside class="ui-panel left-panel" id="leftPanel">
+        <div class="economy tab-status">
+          <div class="wallet">
+            <strong>資金・進行状況</strong>
+            <div class="money-main"><span id="moneyNum">0</span> 円</div>
+            <div class="money-meta">累計プレイ: <span id="playNum">0</span> / 称号: <span id="rankNum">見習い遅刻者</span></div>
+          </div>
+          <div class="save-tools">
+            <strong>保存ツール</strong>
+            <div class="save-grid">
+              <button id="saveRunBtn">進行を保存</button>
+              <button id="loadRunBtn">進行を読込</button>
+              <button id="exportBtn">バックアップ出力</button>
+              <button id="importBtn">バックアップ読込</button>
+              <button id="soundBtn" class="wide">効果音: ON</button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <section class="cast" aria-label="登場人物">
-        <article class="cast-card">
-          <div class="portrait" aria-hidden="true"></div>
-          <div class="cast-text"><b>裁判官 <span class="male-tag">男性</span></b><span id="castJudge">藤澤</span></div>
-        </article>
-        <article class="cast-card">
-          <div class="portrait" aria-hidden="true"></div>
-          <div class="cast-text"><b>弁護士 <span class="male-tag">男性</span></b><span id="castLawyer">田中</span></div>
-        </article>
-        <article class="cast-card">
-          <div class="portrait" aria-hidden="true"></div>
-          <div class="cast-text"><b>検事 <span class="male-tag">男性</span></b><span id="castProsecutor">辻野</span></div>
-        </article>
-        <article class="cast-card">
-          <div class="portrait" aria-hidden="true"></div>
-          <div class="cast-text"><b>証人 <span class="male-tag">男性</span></b><span id="castWitness">角谷</span></div>
-        </article>
-      </section>
+        <section class="cast tab-status" aria-label="登場人物">
+          <article class="cast-card">
+            <div class="portrait" aria-hidden="true"></div>
+            <div class="cast-text"><b>裁判官 <span class="male-tag">男性</span></b><span id="castJudge">藤澤</span></div>
+          </article>
+          <article class="cast-card">
+            <div class="portrait" aria-hidden="true"></div>
+            <div class="cast-text"><b>弁護士 <span class="male-tag">男性</span></b><span id="castLawyer">田中</span></div>
+          </article>
+          <article class="cast-card">
+            <div class="portrait" aria-hidden="true"></div>
+            <div class="cast-text"><b>検事 <span class="male-tag">男性</span></b><span id="castProsecutor">辻野</span></div>
+          </article>
+          <article class="cast-card">
+            <div class="portrait" aria-hidden="true"></div>
+            <div class="cast-text"><b>証人 <span class="male-tag">男性</span></b><span id="castWitness">角谷</span></div>
+          </article>
+        </section>
 
-      <div class="stats">
-        <div class="stat">
-          <strong>有罪度 (<span id="guiltNum">0</span>)</strong>
-          値が高いほど厳罰に近づきます。
-          <div class="bar-wrap"><div class="bar" id="guiltBar"></div></div>
-        </div>
-        <div class="stat">
-          <strong>弁護士信頼度 (<span id="trustNum">0</span>)</strong>
-          低すぎると弁護士が裏切る可能性があります。
-          <div class="bar-wrap"><div class="bar" id="trustBar"></div></div>
-        </div>
-        <div class="stat">
-          <strong>情状酌量値 (<span id="meritNum">0</span>)</strong>
-          高いほど減刑・無罪に近づきます。
-          <div class="bar-wrap"><div class="bar" id="meritBar"></div></div>
-        </div>
-        <div class="stat">
-          <strong>不正疑惑値 (<span id="suspicionNum">0</span>)</strong>
-          高いほど賄賂がバレやすく判決が重くなります。
-          <div class="bar-wrap"><div class="bar" id="suspicionBar"></div></div>
-        </div>
-      </div>
-
-      <article class="scene" id="scene"></article>
-      <section class="action-board">
-        <strong>アクション表示</strong>
-        <div class="action-screen" id="actionScreen">ここに行動結果が大きく表示されます。</div>
-      </section>
-      <section class="prison-stage" id="prisonStage" aria-label="牢獄アニメーション">
-        <div class="prison-cell" id="prisonCell">
-          <div class="fighter inmate" id="inmateFighter">
-            <span class="arm arm-a"></span><span class="arm arm-b"></span>
-            <span class="leg leg-a"></span><span class="leg leg-b"></span>
-            <span class="fighter-tag">囚人 亮太</span>
+        <div class="stats tab-status">
+          <div class="stat">
+            <strong>有罪度 (<span id="guiltNum">0</span>)</strong>
+            値が高いほど厳罰に近づきます。
+            <div class="bar-wrap"><div class="bar" id="guiltBar"></div></div>
           </div>
-          <div class="fighter guard" id="guardFighter">
-            <span class="arm arm-a"></span><span class="arm arm-b"></span>
-            <span class="leg leg-a"></span><span class="leg leg-b"></span>
-            <span class="fighter-tag">看守</span>
+          <div class="stat">
+            <strong>弁護士信頼度 (<span id="trustNum">0</span>)</strong>
+            低すぎると弁護士が裏切る可能性があります。
+            <div class="bar-wrap"><div class="bar" id="trustBar"></div></div>
+          </div>
+          <div class="stat">
+            <strong>情状酌量値 (<span id="meritNum">0</span>)</strong>
+            高いほど減刑・無罪に近づきます。
+            <div class="bar-wrap"><div class="bar" id="meritBar"></div></div>
+          </div>
+          <div class="stat">
+            <strong>不正疑惑値 (<span id="suspicionNum">0</span>)</strong>
+            高いほど賄賂がバレやすく判決が重くなります。
+            <div class="bar-wrap"><div class="bar" id="suspicionBar"></div></div>
           </div>
         </div>
-        <div class="prison-caption" id="prisonCaption">牢獄フェーズ演出</div>
+
+        <section class="sentence-panel tab-status">
+          <strong>判決詳細</strong>
+          <div class="sentence-grid">
+            <div class="sentence-item"><b>懲役年数</b><span id="sentenceYears">未判定</span></div>
+            <div class="sentence-item"><b>収監先</b><span id="sentenceFacility">未判定</span></div>
+            <div class="sentence-item"><b>仮釈放条件</b><span id="sentenceParole">未判定</span></div>
+            <div class="sentence-item"><b>判決メモ</b><span id="sentenceMemo">未判定</span></div>
+            <div class="sentence-item wide"><b>遺言</b><span id="sentenceWill">未判定</span></div>
+          </div>
+        </section>
+      </aside>
+
+      <section class="center-column" id="centerColumn">
+        <div class="panel-tools" id="panelTools">
+          <button id="toggleLeftPanelBtn" class="panel-toggle">左情報を閉じる</button>
+          <button id="toggleRightPanelBtn" class="panel-toggle">右情報を閉じる</button>
+        </div>
+
+        <section class="center-stage" id="centerStage" aria-label="法廷ステージ">
+          <div class="stage-backdrop" id="stageBackdrop"></div>
+          <div class="stage-character stage-judge" id="stageJudge"><span class="stage-label">裁判長</span></div>
+          <div class="stage-character stage-lawyer" id="stageLawyer"><span class="stage-label">弁護士</span></div>
+          <div class="stage-character stage-prosecutor" id="stageProsecutor"><span class="stage-label">検事</span></div>
+          <div class="stage-character stage-witness" id="stageWitness"><span class="stage-label">証人</span></div>
+          <div class="stage-character stage-defendant" id="stageDefendant"><span class="stage-label">被告 亮太</span></div>
+        </section>
+
+        <article class="scene" id="scene"></article>
+        <section class="action-board">
+          <strong>アクション表示</strong>
+          <div class="action-screen" id="actionScreen">ここに行動結果が大きく表示されます。</div>
+        </section>
+        <section class="prison-stage" id="prisonStage" aria-label="牢獄アニメーション">
+          <div class="prison-cell" id="prisonCell">
+            <div class="fighter inmate" id="inmateFighter">
+              <span class="arm arm-a"></span><span class="arm arm-b"></span>
+              <span class="leg leg-a"></span><span class="leg leg-b"></span>
+              <span class="fighter-tag">囚人 亮太</span>
+            </div>
+            <div class="fighter guard" id="guardFighter">
+              <span class="arm arm-a"></span><span class="arm arm-b"></span>
+              <span class="leg leg-a"></span><span class="leg leg-b"></span>
+              <span class="fighter-tag">看守</span>
+            </div>
+          </div>
+          <div class="prison-caption" id="prisonCaption">牢獄フェーズ演出</div>
+        </section>
+
+        <div class="choices tab-actions" id="choices"></div>
+
+        <div class="foot tab-actions">
+          <button class="primary" id="startBtn">開廷する</button>
+          <button id="nextBtn">次へ進む</button>
+          <small id="turn"></small>
+        </div>
       </section>
 
-      <section class="special">
-        <strong>特殊行動</strong>
-        <div class="special-row">
-          <button class="danger-action" id="bribeBtn">賄賂を試みる (-300円)</button>
-          <button id="workshopBtn">時間管理講習を受ける (-120円)</button>
-        </div>
-        <div class="special-row">
-          <button class="free-action" id="punchJudgeBtn">無料: 裁判官を殴る</button>
-          <button class="free-action" id="punchProsecutorBtn">無料: 検事を殴る</button>
-        </div>
-        <button class="dignity-action" id="dogezaBtn">無料: 全力土下座</button>
-        <button class="dignity-action" id="counterSueBtn">無料: 名誉毀損で反訴(有利時)</button>
-        <div class="will-wrap">
-          <label for="willInput">遺言メモ (死刑時に表示)</label>
-          <input id="willInput" maxlength="80" placeholder="例: カップ麺は3分待ってください">
-        </div>
-        <div class="special-note" id="specialNote">各審問で1回だけ使用可能。賄賂は高リスクです。</div>
-      </section>
+      <aside class="ui-panel right-panel" id="rightPanel">
+        <section class="special tab-actions">
+          <strong>特殊行動</strong>
+          <div class="special-row">
+            <button class="danger-action" id="bribeBtn">賄賂を試みる (-300円)</button>
+            <button id="workshopBtn">時間管理講習を受ける (-120円)</button>
+          </div>
+          <div class="special-row">
+            <button class="free-action" id="punchJudgeBtn">無料: 裁判官を殴る</button>
+            <button class="free-action" id="punchProsecutorBtn">無料: 検事を殴る</button>
+          </div>
+          <button class="dignity-action" id="dogezaBtn">無料: 全力土下座</button>
+          <button class="dignity-action" id="counterSueBtn">無料: 名誉毀損で反訴(有利時)</button>
+          <div class="will-wrap">
+            <label for="willInput">遺言メモ (死刑時に表示)</label>
+            <input id="willInput" maxlength="80" placeholder="例: カップ麺は3分待ってください">
+          </div>
+          <div class="special-note" id="specialNote">各審問で1回だけ使用可能。賄賂は高リスクです。</div>
+        </section>
 
-      <div class="choices" id="choices"></div>
+        <section class="log-panel tab-log" aria-live="polite">
+          <div class="log-head">
+            <span>法廷速報</span>
+            <span id="logCount">記録 0件</span>
+          </div>
+          <div class="latest" id="latestLog">ここに最新イベントが表示されます。</div>
+          <div class="log" id="log"></div>
+        </section>
+      </aside>
 
-      <div class="foot">
-        <button class="primary" id="startBtn">開廷する</button>
-        <button id="nextBtn">次へ進む</button>
-        <small id="turn"></small>
-      </div>
-
-      <section class="sentence-panel">
-        <strong>判決詳細</strong>
-        <div class="sentence-grid">
-          <div class="sentence-item"><b>懲役年数</b><span id="sentenceYears">未判定</span></div>
-          <div class="sentence-item"><b>収監先</b><span id="sentenceFacility">未判定</span></div>
-          <div class="sentence-item"><b>仮釈放条件</b><span id="sentenceParole">未判定</span></div>
-          <div class="sentence-item"><b>判決メモ</b><span id="sentenceMemo">未判定</span></div>
-          <div class="sentence-item wide"><b>遺言</b><span id="sentenceWill">未判定</span></div>
-        </div>
-      </section>
-
-      <section class="log-panel" aria-live="polite">
-        <div class="log-head">
-          <span>法廷速報</span>
-          <span id="logCount">記録 0件</span>
-        </div>
-        <div class="latest" id="latestLog">ここに最新イベントが表示されます。</div>
-        <div class="log" id="log"></div>
-      </section>
+      <nav class="mobile-tabbar" id="mobileTabbar" aria-label="モバイルタブ">
+        <button id="tabActionsBtn" class="mobile-tab-btn active" data-tab="actions">行動</button>
+        <button id="tabStatusBtn" class="mobile-tab-btn" data-tab="status">状況</button>
+        <button id="tabLogBtn" class="mobile-tab-btn" data-tab="log">ログ</button>
+      </nav>
     </section>
   </main>
+
+  <div class="rotate-overlay" id="rotateOverlay" aria-hidden="true">
+    <div class="rotate-card">
+      <strong>横画面でプレイ</strong>
+      <p>スマホは横向き専用UIです。端末を回転してください。</p>
+    </div>
+  </div>
 
   <div class="cutin" id="cutinOverlay" aria-hidden="true">
     <div class="cutin-card tone-warn" id="cutinCard">
@@ -1482,11 +2148,49 @@
     const transferOverlayEl = document.getElementById("transferOverlay");
     const transferTitleEl = document.getElementById("transferTitle");
     const transferTextEl = document.getElementById("transferText");
+    const leftPanelEl = document.getElementById("leftPanel");
+    const rightPanelEl = document.getElementById("rightPanel");
+    const panelToolsEl = document.getElementById("panelTools");
+    const toggleLeftPanelBtn = document.getElementById("toggleLeftPanelBtn");
+    const toggleRightPanelBtn = document.getElementById("toggleRightPanelBtn");
+    const mobileTabbarEl = document.getElementById("mobileTabbar");
+    const tabActionsBtn = document.getElementById("tabActionsBtn");
+    const tabStatusBtn = document.getElementById("tabStatusBtn");
+    const tabLogBtn = document.getElementById("tabLogBtn");
+    const rotateOverlayEl = document.getElementById("rotateOverlay");
+    const centerStageEl = document.getElementById("centerStage");
+    const stageBackdropEl = document.getElementById("stageBackdrop");
+    const stageJudgeEl = document.getElementById("stageJudge");
+    const stageLawyerEl = document.getElementById("stageLawyer");
+    const stageProsecutorEl = document.getElementById("stageProsecutor");
+    const stageWitnessEl = document.getElementById("stageWitness");
+    const stageDefendantEl = document.getElementById("stageDefendant");
+    const stageJudgeLabelEl = document.querySelector("#stageJudge .stage-label");
+    const stageLawyerLabelEl = document.querySelector("#stageLawyer .stage-label");
+    const stageProsecutorLabelEl = document.querySelector("#stageProsecutor .stage-label");
+    const stageWitnessLabelEl = document.querySelector("#stageWitness .stage-label");
+    const stageDefendantLabelEl = document.querySelector("#stageDefendant .stage-label");
+    const tabActionSections = Array.from(document.querySelectorAll(".tab-actions"));
+    const tabStatusSections = Array.from(document.querySelectorAll(".tab-status"));
+    const tabLogSections = Array.from(document.querySelectorAll(".tab-log"));
+    const mobileTabButtons = {
+      actions: tabActionsBtn,
+      status: tabStatusBtn,
+      log: tabLogBtn
+    };
+    const stageActors = {
+      judge: stageJudgeEl,
+      lawyer: stageLawyerEl,
+      prosecutor: stageProsecutorEl,
+      witness: stageWitnessEl,
+      defendant: stageDefendantEl
+    };
 
     const STORAGE_KEYS = {
       profile: "ryota_trial_profile_v2",
       run: "ryota_trial_run_v2",
-      sound: "ryota_trial_sound_v1"
+      sound: "ryota_trial_sound_v1",
+      ui: "ryota_trial_ui_v1"
     };
     const COST_BRIBE = 300;
     const COST_WORKSHOP = 120;
@@ -1495,6 +2199,21 @@
     const LAWYER_NAME = "田中";
     const PROSECUTOR_NAME = "辻野";
     const WITNESS_NAME = "角谷";
+    const MOBILE_TABS = ["actions", "status", "log"];
+    const STAGE_ASSETS = {
+      backdrop: {
+        url: "",
+        courtFallback:
+          "radial-gradient(circle at 50% 15%, rgba(255, 246, 224, 0.75), rgba(255, 246, 224, 0) 34%), linear-gradient(180deg, #d0b58a 0%, #b18856 38%, #85643f 100%)",
+        prisonFallback:
+          "radial-gradient(circle at 50% 14%, rgba(164, 186, 230, 0.26), rgba(164, 186, 230, 0) 34%), linear-gradient(180deg, #2c3546 0%, #212939 45%, #181f2b 100%)"
+      },
+      defendant: { url: "", fallback: "linear-gradient(180deg, #dce6f6, #7893c4)" },
+      judge: { url: "", fallback: "linear-gradient(180deg, #d8d4c9, #8e7f71)" },
+      lawyer: { url: "", fallback: "linear-gradient(180deg, #d7dbeb, #7f8ba9)" },
+      prosecutor: { url: "", fallback: "linear-gradient(180deg, #e7cdc8, #a0716a)" },
+      witness: { url: "", fallback: "linear-gradient(180deg, #ddd4be, #93806a)" }
+    };
 
     const FACILITIES = {
       acquit: ["社会復帰サポート窓口(収監なし)"],
@@ -1637,8 +2356,35 @@
       };
     }
 
+    function createDefaultPanelCollapsed() {
+      return {
+        left: false,
+        right: false
+      };
+    }
+
+    function createDefaultUIState() {
+      return {
+        uiMode: "desktop",
+        activeMobileTab: "actions",
+        panelCollapsed: createDefaultPanelCollapsed()
+      };
+    }
+
+    function sanitizeMobileTab(value) {
+      return MOBILE_TABS.includes(value) ? value : "actions";
+    }
+
+    function sanitizePanelCollapsed(value) {
+      return {
+        left: !!(value && value.left),
+        right: !!(value && value.right)
+      };
+    }
+
     let profile = createDefaultProfile();
     let state = {};
+    let uiState = createDefaultUIState();
     let soundEnabled = true;
     let soundArmed = false;
     let audioCtx = null;
@@ -1708,6 +2454,24 @@
       return true;
     }
 
+    function loadUIState() {
+      const loaded = loadJSON(STORAGE_KEYS.ui);
+      if (!loaded || typeof loaded !== "object") return createDefaultUIState();
+      const fallback = createDefaultUIState();
+      return {
+        uiMode: typeof loaded.uiMode === "string" ? loaded.uiMode : fallback.uiMode,
+        activeMobileTab: sanitizeMobileTab(loaded.activeMobileTab),
+        panelCollapsed: sanitizePanelCollapsed(loaded.panelCollapsed)
+      };
+    }
+
+    function saveUIState() {
+      uiState.activeMobileTab = sanitizeMobileTab(state.activeMobileTab || uiState.activeMobileTab);
+      uiState.panelCollapsed = sanitizePanelCollapsed(state.panelCollapsed || uiState.panelCollapsed);
+      uiState.uiMode = typeof state.uiMode === "string" ? state.uiMode : uiState.uiMode;
+      saveJSON(STORAGE_KEYS.ui, uiState);
+    }
+
     function saveProfile() {
       saveJSON(STORAGE_KEYS.profile, profile);
     }
@@ -1727,6 +2491,164 @@
       castLawyerEl.textContent = LAWYER_NAME;
       castProsecutorEl.textContent = PROSECUTOR_NAME;
       castWitnessEl.textContent = WITNESS_NAME;
+      stageJudgeLabelEl.textContent = "裁判長 " + JUDGE_NAME;
+      stageLawyerLabelEl.textContent = "弁護士 " + LAWYER_NAME;
+      stageProsecutorLabelEl.textContent = "検事 " + PROSECUTOR_NAME;
+      stageWitnessLabelEl.textContent = "証人 " + WITNESS_NAME;
+      stageDefendantLabelEl.textContent = "被告 亮太";
+    }
+
+    function buildAssetBackground(asset, fallback) {
+      if (asset && typeof asset.url === "string" && asset.url.trim()) {
+        const safeUrl = asset.url.trim().replace(/"/g, "\\\"");
+        return "linear-gradient(180deg, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.28)), url(\"" + safeUrl + "\")";
+      }
+      return fallback;
+    }
+
+    function applyCharacterAsset(el, asset) {
+      if (!el || !asset) return;
+      const hasImage = !!(typeof asset.url === "string" && asset.url.trim());
+      el.style.backgroundImage = buildAssetBackground(asset, asset.fallback || "linear-gradient(180deg, #dadada, #808080)");
+      el.classList.toggle("has-image", hasImage);
+    }
+
+    function syncStageBackdrop() {
+      if (!stageBackdropEl) return;
+      const prisonMode = document.body.classList.contains("mode-prison");
+      const backdrop = STAGE_ASSETS.backdrop;
+      const fallback = prisonMode ? backdrop.prisonFallback : backdrop.courtFallback;
+      stageBackdropEl.style.backgroundImage = buildAssetBackground(backdrop, fallback);
+      centerStageEl.classList.toggle("is-prison", prisonMode);
+    }
+
+    function applyStageAssets() {
+      applyCharacterAsset(stageJudgeEl, STAGE_ASSETS.judge);
+      applyCharacterAsset(stageLawyerEl, STAGE_ASSETS.lawyer);
+      applyCharacterAsset(stageProsecutorEl, STAGE_ASSETS.prosecutor);
+      applyCharacterAsset(stageWitnessEl, STAGE_ASSETS.witness);
+      applyCharacterAsset(stageDefendantEl, STAGE_ASSETS.defendant);
+      syncStageBackdrop();
+    }
+
+    function flashStageActor(actorKey, tone = "warn") {
+      const actorEl = stageActors[actorKey];
+      if (!actorEl) return;
+      if (actorEl.__flashTimer) clearTimeout(actorEl.__flashTimer);
+      actorEl.classList.remove("tone-ok", "tone-warn", "tone-bad", "active");
+      void actorEl.offsetWidth;
+      actorEl.classList.add("tone-" + tone, "active");
+      actorEl.__flashTimer = setTimeout(() => {
+        actorEl.classList.remove("tone-ok", "tone-warn", "tone-bad", "active");
+      }, 560);
+    }
+
+    function inferStageActor(role, line) {
+      const text = (role || "") + " " + (line || "");
+      if (text.includes("裁判官") || text.includes("裁判長")) return "judge";
+      if (text.includes("弁護士")) return "lawyer";
+      if (text.includes("検事")) return "prosecutor";
+      if (text.includes("証人")) return "witness";
+      if (text.includes("看守") || text.includes("執行官")) return "prosecutor";
+      return "defendant";
+    }
+
+    function hydrateUIState(source = null) {
+      const fallback = source && typeof source === "object" ? source : {};
+      state.uiMode = detectUiMode();
+      state.activeMobileTab = sanitizeMobileTab(fallback.activeMobileTab || uiState.activeMobileTab);
+      state.panelCollapsed = sanitizePanelCollapsed(fallback.panelCollapsed || uiState.panelCollapsed);
+      uiState.activeMobileTab = state.activeMobileTab;
+      uiState.panelCollapsed = sanitizePanelCollapsed(state.panelCollapsed);
+    }
+
+    function detectUiMode() {
+      const smallViewport = window.matchMedia("(max-width: 980px)").matches || window.matchMedia("(pointer: coarse)").matches;
+      if (!smallViewport) return "desktop";
+      const portrait = window.matchMedia("(orientation: portrait)").matches;
+      return portrait ? "mobile-portrait" : "mobile-landscape";
+    }
+
+    function applyTabVisibility() {
+      const mobileLandscape = state.uiMode === "mobile-landscape";
+      if (!mobileLandscape) {
+        tabActionSections.forEach((el) => { el.hidden = false; });
+        tabStatusSections.forEach((el) => { el.hidden = false; });
+        tabLogSections.forEach((el) => { el.hidden = false; });
+        leftPanelEl.hidden = false;
+        rightPanelEl.hidden = false;
+        return;
+      }
+
+      const active = sanitizeMobileTab(state.activeMobileTab);
+      tabActionSections.forEach((el) => { el.hidden = active !== "actions"; });
+      tabStatusSections.forEach((el) => { el.hidden = active !== "status"; });
+      tabLogSections.forEach((el) => { el.hidden = active !== "log"; });
+
+      leftPanelEl.hidden = active !== "status";
+      const showRightInActions = active === "actions" && state.phase === "trial";
+      rightPanelEl.hidden = !(active === "log" || showRightInActions);
+    }
+
+    function updateMobileTabButtons() {
+      const active = sanitizeMobileTab(state.activeMobileTab);
+      MOBILE_TABS.forEach((tab) => {
+        const btn = mobileTabButtons[tab];
+        if (!btn) return;
+        btn.classList.toggle("active", tab === active);
+        btn.setAttribute("aria-pressed", tab === active ? "true" : "false");
+      });
+      mobileTabbarEl.setAttribute("aria-hidden", state.uiMode === "mobile-landscape" ? "false" : "true");
+    }
+
+    function applyPanelCollapsedState(persist = false) {
+      state.panelCollapsed = sanitizePanelCollapsed(state.panelCollapsed);
+      const isDesktop = state.uiMode === "desktop";
+      document.body.classList.toggle("pc-left-collapsed", isDesktop && state.panelCollapsed.left);
+      document.body.classList.toggle("pc-right-collapsed", isDesktop && state.panelCollapsed.right);
+      toggleLeftPanelBtn.textContent = state.panelCollapsed.left ? "左情報を開く" : "左情報を閉じる";
+      toggleRightPanelBtn.textContent = state.panelCollapsed.right ? "右情報を開く" : "右情報を閉じる";
+      toggleLeftPanelBtn.disabled = !isDesktop;
+      toggleRightPanelBtn.disabled = !isDesktop;
+      panelToolsEl.hidden = state.uiMode !== "desktop";
+      if (persist) saveUIState();
+    }
+
+    function setMobileTab(tab, persist = false) {
+      state.activeMobileTab = sanitizeMobileTab(tab);
+      document.body.classList.remove("mobile-tab-actions", "mobile-tab-status", "mobile-tab-log");
+      document.body.classList.add("mobile-tab-" + state.activeMobileTab);
+      applyTabVisibility();
+      updateMobileTabButtons();
+      if (persist) saveUIState();
+    }
+
+    function setUiMode(mode, persist = false) {
+      const safeMode = mode === "mobile-portrait" || mode === "mobile-landscape" ? mode : "desktop";
+      state.uiMode = safeMode;
+      document.body.classList.remove("ui-desktop", "ui-mobile-landscape", "ui-mobile-portrait");
+      document.body.classList.add("ui-" + safeMode);
+      rotateOverlayEl.setAttribute("aria-hidden", safeMode === "mobile-portrait" ? "false" : "true");
+      if (safeMode !== "desktop") {
+        document.body.classList.remove("pc-left-collapsed", "pc-right-collapsed");
+      }
+      applyPanelCollapsedState(false);
+      setMobileTab(state.activeMobileTab, false);
+      if (persist) saveUIState();
+    }
+
+    function syncResponsiveUI(persist = false) {
+      setUiMode(detectUiMode(), false);
+      applyPanelCollapsedState(false);
+      setMobileTab(state.activeMobileTab, false);
+      if (persist) saveUIState();
+    }
+
+    function togglePanel(side) {
+      if (state.uiMode !== "desktop") return;
+      if (side === "left") state.panelCollapsed.left = !state.panelCollapsed.left;
+      if (side === "right") state.panelCollapsed.right = !state.panelCollapsed.right;
+      applyPanelCollapsedState(true);
     }
 
     function setLocationMode(mode) {
@@ -1738,6 +2660,7 @@
         document.body.classList.add("mode-court");
         locationTagEl.textContent = "法廷";
       }
+      syncStageBackdrop();
     }
 
     function setActionScreen(text, cls = "") {
@@ -1828,13 +2751,14 @@
       transferOverlayEl.classList.remove("show");
     }
 
-    function showCutIn(role, line, tone = "warn", mood = "") {
+    function showCutIn(role, line, tone = "warn", mood = "", actorKey = "") {
       if (cutinTimer) clearTimeout(cutinTimer);
       cutinRoleEl.textContent = role;
       cutinLineEl.textContent = line;
       cutinCardEl.className = "cutin-card";
       cutinCardEl.classList.add("tone-" + (tone || "warn"));
       if (mood) cutinCardEl.classList.add("mood-" + mood);
+      flashStageActor(actorKey || inferStageActor(role, line), tone || "warn");
       cutinOverlayEl.classList.add("show");
       cutinTimer = setTimeout(() => {
         cutinOverlayEl.classList.remove("show");
@@ -1851,7 +2775,7 @@
     function showChoiceCutIn(choice) {
       const tone = getToneFromEffect(choice.effect || {});
       const clipped = choice.label.length > 30 ? choice.label.slice(0, 30) + "…" : choice.label;
-      showCutIn("被告 亮太", "選択: " + clipped, tone, tone === "bad" ? "guard" : "");
+      showCutIn("被告 亮太", "選択: " + clipped, tone, tone === "bad" ? "guard" : "", "defendant");
     }
 
     function playTransferOverlay(title, text, onDone, delay = 1280) {
@@ -2031,10 +2955,14 @@
       } else {
         specialNoteEl.textContent = "各審問で1回だけ使用可能。無料行動(殴る/土下座/反訴)も使えます。";
       }
+      applyTabVisibility();
     }
 
     function persistRunSilently() {
       if (!(state.phase === "trial" && state.started && !state.finished)) return;
+      state.activeMobileTab = sanitizeMobileTab(state.activeMobileTab || uiState.activeMobileTab);
+      state.panelCollapsed = sanitizePanelCollapsed(state.panelCollapsed || uiState.panelCollapsed);
+      state.uiMode = detectUiMode();
       const payload = {
         version: 2,
         savedAt: Date.now(),
@@ -2066,6 +2994,7 @@
       }
 
       state = raw;
+      hydrateUIState(raw);
       state.guilt = clamp(Number(state.guilt) || 0);
       state.trust = clamp(Number(state.trust) || 0);
       state.merit = clamp(Number(state.merit) || 0);
@@ -2106,6 +3035,7 @@
         setLocationMode("court");
         nextScene();
       }
+      syncResponsiveUI(true);
       pushLog("保存データから審理を再開した。", "ok");
     }
 
@@ -2114,7 +3044,8 @@
         version: 2,
         exportedAt: new Date().toISOString(),
         profile,
-        run: loadJSON(STORAGE_KEYS.run)
+        run: loadJSON(STORAGE_KEYS.run),
+        ui: loadJSON(STORAGE_KEYS.ui)
       };
       const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
       window.prompt("このバックアップ文字列をコピーしてください", encoded);
@@ -2131,8 +3062,12 @@
         if (payload.profile) saveJSON(STORAGE_KEYS.profile, payload.profile);
         if (payload.run) saveJSON(STORAGE_KEYS.run, payload.run);
         else localStorage.removeItem(STORAGE_KEYS.run);
+        if (payload.ui) saveJSON(STORAGE_KEYS.ui, payload.ui);
         profile = loadProfile();
+        uiState = loadUIState();
         renderEconomy();
+        hydrateUIState(state);
+        syncResponsiveUI(true);
         updateSpecialButtons();
         pushLog("バックアップを復元した。必要なら『進行を読込』で再開してください。", "ok");
       } catch (err) {
@@ -2997,8 +3932,12 @@
         finalVerdict: null,
         willDraft: "",
         awaitingAdvance: false,
-        executingDeath: false
+        executingDeath: false,
+        uiMode: "desktop",
+        activeMobileTab: "actions",
+        panelCollapsed: createDefaultPanelCollapsed()
       };
+      hydrateUIState(state);
       logEl.innerHTML = "";
       logCountEl.textContent = "記録 0件";
       setLatestLog("ここに最新イベントが表示されます。");
@@ -3021,6 +3960,7 @@
       renderStats();
       renderEconomy();
       updateSpecialButtons();
+      syncResponsiveUI(true);
       pushLog("裁判官 " + JUDGE_NAME + " の厳格度が密かに設定された。", "warn");
       pushLog("本日の証人: " + witness.name + " (" + witness.note + ")", "warn");
     }
@@ -3086,6 +4026,17 @@
       state.willDraft = willInputEl.value.slice(0, 80);
       persistRunSilently();
     });
+    toggleLeftPanelBtn.addEventListener("click", () => togglePanel("left"));
+    toggleRightPanelBtn.addEventListener("click", () => togglePanel("right"));
+    tabActionsBtn.addEventListener("click", () => setMobileTab("actions", true));
+    tabStatusBtn.addEventListener("click", () => setMobileTab("status", true));
+    tabLogBtn.addEventListener("click", () => setMobileTab("log", true));
+    window.addEventListener("resize", () => {
+      syncResponsiveUI(true);
+    });
+    window.addEventListener("orientationchange", () => {
+      syncResponsiveUI(true);
+    });
 
     const armSound = () => {
       soundArmed = true;
@@ -3096,9 +4047,11 @@
 
     profile = loadProfile();
     soundEnabled = loadSoundSetting();
+    uiState = loadUIState();
     updateSoundButton();
     renderEconomy();
     renderCast();
+    applyStageAssets();
     init();
     if (loadJSON(STORAGE_KEYS.run)) {
       pushLog("保存済みの審理があります。『進行を読込』で再開できます。", "warn");
