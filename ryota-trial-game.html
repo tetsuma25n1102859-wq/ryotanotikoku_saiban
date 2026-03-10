@@ -1748,7 +1748,7 @@
       padding: 6px 6px calc(54px + env(safe-area-inset-bottom));
       grid-template-columns: 1fr;
       height: 100%;
-      overflow: hidden;
+      overflow: auto;
     }
 
     body.ui-mobile-landscape #centerColumn {
@@ -2195,6 +2195,7 @@
     const transferOverlayEl = document.getElementById("transferOverlay");
     const transferTitleEl = document.getElementById("transferTitle");
     const transferTextEl = document.getElementById("transferText");
+    const centerColumnEl = document.getElementById("centerColumn");
     const leftPanelEl = document.getElementById("leftPanel");
     const rightPanelEl = document.getElementById("rightPanel");
     const panelToolsEl = document.getElementById("panelTools");
@@ -2602,8 +2603,10 @@
 
     function hydrateUIState(source = null) {
       const fallback = source && typeof source === "object" ? source : {};
-      state.uiMode = detectUiMode();
-      state.activeMobileTab = sanitizeMobileTab(fallback.activeMobileTab || uiState.activeMobileTab);
+      const detectedMode = detectUiMode();
+      state.uiMode = detectedMode;
+      const preferredTab = sanitizeMobileTab(fallback.activeMobileTab || uiState.activeMobileTab);
+      state.activeMobileTab = detectedMode === "mobile-landscape" ? "actions" : preferredTab;
       state.panelCollapsed = sanitizePanelCollapsed(fallback.panelCollapsed || uiState.panelCollapsed);
       uiState.activeMobileTab = state.activeMobileTab;
       uiState.panelCollapsed = sanitizePanelCollapsed(state.panelCollapsed);
@@ -2621,12 +2624,14 @@
         tabActionSections.forEach((el) => { el.hidden = false; });
         tabStatusSections.forEach((el) => { el.hidden = false; });
         tabLogSections.forEach((el) => { el.hidden = false; });
+        centerColumnEl.hidden = false;
         leftPanelEl.hidden = false;
         rightPanelEl.hidden = false;
         return;
       }
 
       const active = sanitizeMobileTab(state.activeMobileTab);
+      centerColumnEl.hidden = active !== "actions";
       tabActionSections.forEach((el) => { el.hidden = active !== "actions"; });
       tabStatusSections.forEach((el) => { el.hidden = active !== "status"; });
       tabLogSections.forEach((el) => { el.hidden = active !== "log"; });
