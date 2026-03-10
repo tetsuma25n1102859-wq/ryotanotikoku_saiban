@@ -1368,6 +1368,16 @@
       color: #e5efff;
     }
 
+    .mobile-info-tools {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .mobile-info-tools .panel-toggle {
+      width: 100%;
+    }
+
     .center-stage {
       position: relative;
       min-height: clamp(240px, 34vh, 360px);
@@ -1638,14 +1648,123 @@
       justify-content: space-between;
     }
 
-    /* Mobile: keep PC-like layout, only dock key controls at the bottom */
-    @media (max-width: 980px) {
+    /* Mobile: single column with center-first flow + fixed progress controls */
+    @media (max-width: 980px), (pointer: coarse) {
+      body {
+        display: block;
+        padding: 0;
+        overflow-x: hidden;
+      }
+
+      .court {
+        width: 100%;
+        min-height: 100vh;
+        border-left: none;
+        border-right: none;
+        border-radius: 0;
+      }
+
+      .head {
+        padding: 11px 12px 10px;
+      }
+
+      h1 {
+        font-size: 1.22rem;
+        letter-spacing: 0.04em;
+      }
+
+      .meta {
+        margin-top: 4px;
+        font-size: 0.75rem;
+        line-height: 1.45;
+      }
+
       .body {
-        padding-bottom: calc(98px + env(safe-area-inset-bottom));
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+        padding: 10px;
+        padding-bottom: calc(112px + env(safe-area-inset-bottom));
+        align-items: start;
+      }
+
+      #centerColumn {
+        order: 1;
+      }
+
+      #leftPanel {
+        order: 2;
+      }
+
+      #rightPanel {
+        order: 3;
+      }
+
+      .ui-panel,
+      .center-column {
+        min-width: 0;
+        width: 100%;
+      }
+
+      .mobile-info-tools {
+        display: grid;
       }
 
       .panel-tools {
         display: none;
+      }
+
+      .left-panel .cast,
+      .left-panel .stats,
+      .left-panel .sentence-grid,
+      .special-row,
+      .save-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cast-card {
+        min-height: 60px;
+      }
+
+      .center-stage {
+        min-height: clamp(194px, 34vh, 286px);
+      }
+
+      .stage-character {
+        width: 78px;
+        height: 112px;
+      }
+
+      .stage-judge {
+        width: 92px;
+        height: 118px;
+        top: 6%;
+      }
+
+      .stage-witness {
+        width: 68px;
+        height: 98px;
+        left: 26%;
+        top: 31%;
+      }
+
+      .stage-defendant {
+        width: 102px;
+        height: 126px;
+        bottom: 8%;
+      }
+
+      .scene {
+        font-size: 0.98rem;
+        min-height: 90px;
+      }
+
+      .action-screen {
+        font-size: 1rem;
+      }
+
+      .log {
+        max-height: 178px;
       }
 
       .foot {
@@ -1669,7 +1788,7 @@
       }
 
       #turn {
-        max-width: 46vw;
+        max-width: 44vw;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -1682,9 +1801,38 @@
       }
     }
 
-    @media (max-width: 700px) {
+    @media (max-width: 700px), (max-width: 980px) and (pointer: coarse) {
       .body {
-        padding-bottom: calc(102px + env(safe-area-inset-bottom));
+        padding: 8px;
+        padding-bottom: calc(108px + env(safe-area-inset-bottom));
+      }
+
+      .meta {
+        font-size: 0.72rem;
+      }
+
+      .center-stage {
+        min-height: clamp(176px, 31vh, 238px);
+      }
+
+      .stage-character {
+        width: 70px;
+        height: 102px;
+      }
+
+      .stage-judge {
+        width: 84px;
+        height: 108px;
+      }
+
+      .stage-witness {
+        width: 60px;
+        height: 88px;
+      }
+
+      .stage-defendant {
+        width: 92px;
+        height: 116px;
       }
 
       .foot {
@@ -1693,7 +1841,12 @@
 
       .primary,
       #nextBtn {
-        min-width: 122px;
+        min-width: 116px;
+      }
+
+      #turn {
+        max-width: 39vw;
+        font-size: 0.73rem;
       }
     }
   </style>
@@ -1783,6 +1936,10 @@
         <div class="panel-tools" id="panelTools">
           <button id="toggleLeftPanelBtn" class="panel-toggle">左情報を閉じる</button>
           <button id="toggleRightPanelBtn" class="panel-toggle">右情報を閉じる</button>
+        </div>
+        <div class="mobile-info-tools" id="mobileInfoTools" hidden>
+          <button id="mobileToggleLeftBtn" class="panel-toggle" type="button">状況を表示</button>
+          <button id="mobileToggleRightBtn" class="panel-toggle" type="button">ログ/特殊を表示</button>
         </div>
 
         <section class="center-stage" id="centerStage" aria-label="法廷ステージ">
@@ -1934,6 +2091,9 @@
     const panelToolsEl = document.getElementById("panelTools");
     const toggleLeftPanelBtn = document.getElementById("toggleLeftPanelBtn");
     const toggleRightPanelBtn = document.getElementById("toggleRightPanelBtn");
+    const mobileInfoToolsEl = document.getElementById("mobileInfoTools");
+    const mobileToggleLeftBtn = document.getElementById("mobileToggleLeftBtn");
+    const mobileToggleRightBtn = document.getElementById("mobileToggleRightBtn");
     const centerStageEl = document.getElementById("centerStage");
     const stageBackdropEl = document.getElementById("stageBackdrop");
     const stageJudgeEl = document.getElementById("stageJudge");
@@ -2154,6 +2314,7 @@
     let prisonAnimResetTimer = null;
     let cutinTimer = null;
     let transferTimer = null;
+    let mobileInfoPanel = "none";
 
     function rand(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -2327,8 +2488,25 @@
 
     function applyTabVisibility() {
       centerColumnEl.hidden = false;
-      leftPanelEl.hidden = false;
-      rightPanelEl.hidden = false;
+      const isMobile = state.uiMode === "mobile";
+
+      if (!isMobile) {
+        leftPanelEl.hidden = false;
+        rightPanelEl.hidden = false;
+        mobileInfoPanel = "none";
+        if (mobileInfoToolsEl) mobileInfoToolsEl.hidden = true;
+        return;
+      }
+
+      if (mobileInfoToolsEl) mobileInfoToolsEl.hidden = false;
+      leftPanelEl.hidden = mobileInfoPanel !== "left";
+      rightPanelEl.hidden = mobileInfoPanel !== "right";
+      if (mobileToggleLeftBtn) {
+        mobileToggleLeftBtn.textContent = mobileInfoPanel === "left" ? "状況を隠す" : "状況を表示";
+      }
+      if (mobileToggleRightBtn) {
+        mobileToggleRightBtn.textContent = mobileInfoPanel === "right" ? "ログ/特殊を隠す" : "ログ/特殊を表示";
+      }
     }
 
     function applyPanelCollapsedState(persist = false) {
@@ -2345,12 +2523,16 @@
     }
 
     function setUiMode(mode, persist = false) {
+      const prevMode = state.uiMode;
       const safeMode = mode === "mobile" ? "mobile" : "desktop";
       state.uiMode = safeMode;
       document.body.classList.remove("ui-desktop", "ui-mobile", "ui-mobile-landscape", "ui-mobile-portrait");
       document.body.classList.add("ui-" + safeMode);
       if (safeMode !== "desktop") {
         document.body.classList.remove("pc-left-collapsed", "pc-right-collapsed");
+      }
+      if (safeMode === "mobile" && prevMode !== "mobile") {
+        mobileInfoPanel = "none";
       }
       applyPanelCollapsedState(false);
       applyTabVisibility();
@@ -2369,6 +2551,13 @@
       if (side === "left") state.panelCollapsed.left = !state.panelCollapsed.left;
       if (side === "right") state.panelCollapsed.right = !state.panelCollapsed.right;
       applyPanelCollapsedState(true);
+    }
+
+    function toggleMobileInfoPanel(side) {
+      if (state.uiMode !== "mobile") return;
+      if (side !== "left" && side !== "right") return;
+      mobileInfoPanel = mobileInfoPanel === side ? "none" : side;
+      applyTabVisibility();
     }
 
     function setLocationMode(mode) {
@@ -2714,6 +2903,7 @@
 
       state = raw;
       hydrateUIState(raw);
+      mobileInfoPanel = "none";
       state.guilt = clamp(Number(state.guilt) || 0);
       state.trust = clamp(Number(state.trust) || 0);
       state.merit = clamp(Number(state.merit) || 0);
@@ -3655,6 +3845,7 @@
         uiMode: "desktop",
         panelCollapsed: createDefaultPanelCollapsed()
       };
+      mobileInfoPanel = "none";
       hydrateUIState(state);
       logEl.innerHTML = "";
       logCountEl.textContent = "記録 0件";
@@ -3746,6 +3937,12 @@
     });
     toggleLeftPanelBtn.addEventListener("click", () => togglePanel("left"));
     toggleRightPanelBtn.addEventListener("click", () => togglePanel("right"));
+    if (mobileToggleLeftBtn) {
+      mobileToggleLeftBtn.addEventListener("click", () => toggleMobileInfoPanel("left"));
+    }
+    if (mobileToggleRightBtn) {
+      mobileToggleRightBtn.addEventListener("click", () => toggleMobileInfoPanel("right"));
+    }
     window.addEventListener("resize", () => {
       syncResponsiveUI(true);
     });
