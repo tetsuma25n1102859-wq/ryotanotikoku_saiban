@@ -1161,7 +1161,7 @@
       display: none !important;
     }
 
-    @media (max-width: 980px) {
+    @media (max-width: 980px), (pointer: coarse) {
       .body {
         padding: 14px;
         gap: 10px;
@@ -1224,7 +1224,7 @@
       }
     }
 
-    @media (max-width: 700px) {
+    @media (max-width: 700px), (max-width: 980px) and (pointer: coarse) {
       .body {
         padding: 10px;
         gap: 8px;
@@ -1272,7 +1272,7 @@
       }
     }
 
-    /* ===== UI 2.0: desktop / mobile-landscape split ===== */
+    /* ===== UI 2.0 base layout ===== */
     .body {
       padding: 16px;
       display: grid;
@@ -1609,71 +1609,6 @@
       grid-area: auto;
     }
 
-    .mobile-tabbar {
-      display: none;
-      gap: 6px;
-      padding: 6px;
-      border: 1px solid #bfa47d;
-      border-radius: 10px;
-      background: rgba(255, 249, 238, 0.92);
-      backdrop-filter: blur(6px);
-    }
-
-    .mobile-tab-btn {
-      text-align: center;
-      font-size: 0.9rem;
-      font-weight: 800;
-      letter-spacing: 0.03em;
-      border-radius: 8px;
-      padding: 10px 8px;
-      border-color: #b08d62;
-    }
-
-    .mobile-tab-btn.active {
-      background: linear-gradient(180deg, #8f3232, #6c2525);
-      border-color: #5e1f1f;
-      color: #fff;
-    }
-
-    .rotate-overlay {
-      position: fixed;
-      inset: 0;
-      display: none;
-      place-items: center;
-      background: rgba(14, 18, 27, 0.9);
-      z-index: 1500;
-      padding: 16px;
-    }
-
-    .rotate-card {
-      width: min(440px, 100%);
-      border: 1px solid rgba(171, 193, 238, 0.45);
-      border-radius: 14px;
-      background: linear-gradient(180deg, rgba(35, 47, 67, 0.96), rgba(20, 30, 45, 0.95));
-      color: #eaf1ff;
-      padding: 18px 20px;
-      text-align: center;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
-    }
-
-    .rotate-card strong {
-      display: block;
-      font-size: 1.35rem;
-      letter-spacing: 0.07em;
-      margin-bottom: 8px;
-    }
-
-    .rotate-card p {
-      margin: 0;
-      font-size: 0.98rem;
-      line-height: 1.6;
-      letter-spacing: 0.02em;
-    }
-
-    body.ui-desktop .mobile-tabbar {
-      display: none !important;
-    }
-
     body.ui-desktop .body {
       grid-template-columns: minmax(240px, 0.9fr) minmax(0, 1.85fr) minmax(250px, 1fr);
     }
@@ -1703,263 +1638,63 @@
       justify-content: space-between;
     }
 
-    body.ui-mobile-landscape {
-      padding: 0;
-      place-items: stretch;
-      overflow: hidden;
+    /* Mobile: keep PC-like layout, only dock key controls at the bottom */
+    @media (max-width: 980px) {
+      .body {
+        padding-bottom: calc(98px + env(safe-area-inset-bottom));
+      }
+
+      .panel-tools {
+        display: none;
+      }
+
+      .foot {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1450;
+        margin: 0;
+        padding:
+          8px calc(10px + env(safe-area-inset-right))
+          calc(8px + env(safe-area-inset-bottom))
+          calc(10px + env(safe-area-inset-left));
+        background: rgba(246, 236, 220, 0.96);
+        border-top: 1px solid #c8ad84;
+        box-shadow: 0 -8px 22px rgba(34, 20, 8, 0.22);
+        backdrop-filter: blur(4px);
+        justify-content: space-between;
+        gap: 8px;
+        flex-wrap: nowrap;
+      }
+
+      #turn {
+        max-width: 46vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      body.mode-prison .foot {
+        background: rgba(30, 39, 54, 0.96);
+        border-top-color: #506283;
+        box-shadow: 0 -8px 22px rgba(0, 0, 0, 0.38);
+      }
     }
 
-    body.ui-mobile-landscape .court {
-      width: 100%;
-      min-height: 100dvh;
-      max-height: 100dvh;
-      border-radius: 0;
-      border-left: none;
-      border-right: none;
-      display: grid;
-      grid-template-rows: auto 1fr;
-    }
+    @media (max-width: 700px) {
+      .body {
+        padding-bottom: calc(102px + env(safe-area-inset-bottom));
+      }
 
-    body.ui-mobile-landscape .head {
-      padding: 9px 12px 8px;
-    }
+      .foot {
+        gap: 6px;
+      }
 
-    body.ui-mobile-landscape h1 {
-      font-size: 1.14rem;
-      letter-spacing: 0.03em;
-    }
-
-    body.ui-mobile-landscape .meta {
-      margin-top: 3px;
-      font-size: 0.75rem;
-      letter-spacing: 0.01em;
-    }
-
-    body.ui-mobile-landscape .location-tag {
-      font-size: 0.65rem;
-      padding: 2px 6px;
-      margin-left: 6px;
-    }
-
-    body.ui-mobile-landscape .body {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      padding: 6px 6px calc(54px + env(safe-area-inset-bottom));
-      grid-template-columns: 1fr;
-      height: 100%;
-      overflow: auto;
-    }
-
-    body.ui-mobile-landscape #centerColumn {
-      order: 1;
-      gap: 6px;
-      min-height: 0;
-      height: 100%;
-      grid-template-rows: auto auto auto 1fr auto;
-      overflow: hidden;
-    }
-    body.ui-mobile-landscape #leftPanel { order: 2; }
-    body.ui-mobile-landscape #rightPanel { order: 3; }
-    body.ui-mobile-landscape #mobileTabbar { order: 4; }
-
-    body.ui-mobile-landscape .ui-panel {
-      border-radius: 10px;
-      padding: 8px;
-      gap: 8px;
-      max-height: calc(100dvh - 170px);
-      overflow: auto;
-    }
-
-    body.ui-mobile-landscape .panel-tools {
-      display: none;
-    }
-
-    body.ui-mobile-landscape .center-stage {
-      min-height: clamp(120px, 30dvh, 176px);
-      max-height: 32dvh;
-      border-radius: 10px;
-    }
-
-    body.ui-mobile-landscape .stage-judge {
-      width: 86px;
-      height: 110px;
-    }
-
-    body.ui-mobile-landscape .stage-defendant {
-      width: 96px;
-      height: 126px;
-      bottom: 6%;
-    }
-
-    body.ui-mobile-landscape .stage-lawyer,
-    body.ui-mobile-landscape .stage-prosecutor {
-      width: 74px;
-      height: 104px;
-      bottom: 21%;
-    }
-
-    body.ui-mobile-landscape .stage-witness {
-      width: 70px;
-      height: 96px;
-      left: 26%;
-    }
-
-    body.ui-mobile-landscape .stage-label {
-      font-size: 0.58rem;
-      padding: 2px 6px;
-    }
-
-    body.ui-mobile-landscape .scene {
-      min-height: 60px;
-      max-height: 16dvh;
-      overflow: auto;
-      font-size: 0.87rem;
-      padding: 8px;
-      border-width: 1px;
-    }
-
-    body.ui-mobile-landscape .action-board {
-      padding: 7px 8px;
-      gap: 4px;
-    }
-
-    body.ui-mobile-landscape .action-screen {
-      min-height: 38px;
-      font-size: 0.87rem;
-      padding: 7px 8px;
-    }
-
-    body.ui-mobile-landscape .choices {
-      min-height: 0;
-      overflow: auto;
-      gap: 6px;
-      padding-right: 2px;
-    }
-
-    body.ui-mobile-landscape .choices button,
-    body.ui-mobile-landscape .special button {
-      padding: 8px 9px;
-      font-size: 0.84rem;
-      line-height: 1.32;
-    }
-
-    body.ui-mobile-landscape .foot {
-      gap: 6px;
-      justify-content: space-between;
-      position: static;
-      background: transparent;
-      border-top: none;
-      padding-top: 0;
-      margin-bottom: 2px;
-    }
-
-    body.ui-mobile-landscape #nextBtn,
-    body.ui-mobile-landscape .primary {
-      min-width: 108px;
-      font-size: 0.84rem;
-      padding: 8px 9px;
-    }
-
-    body.ui-mobile-landscape #turn {
-      font-size: 0.7rem;
-      padding: 4px 7px;
-    }
-
-    body.ui-mobile-landscape .stats {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    body.ui-mobile-landscape .cast {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    body.ui-mobile-landscape .cast-card {
-      min-height: 56px;
-      padding: 6px;
-    }
-
-    body.ui-mobile-landscape .portrait {
-      width: 36px;
-      height: 36px;
-    }
-
-    body.ui-mobile-landscape .portrait::before {
-      top: -3px;
-      left: 5px;
-      width: 22px;
-      height: 10px;
-    }
-
-    body.ui-mobile-landscape .portrait::after {
-      width: 24px;
-      left: 5px;
-    }
-
-    body.ui-mobile-landscape .cast-text b {
-      font-size: 0.72rem;
-    }
-
-    body.ui-mobile-landscape .cast-text span {
-      font-size: 0.9rem;
-    }
-
-    body.ui-mobile-landscape .mobile-tabbar {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 1300;
-      border-radius: 0;
-      border-left: none;
-      border-right: none;
-      border-bottom: none;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 6px;
-      padding: 7px calc(8px + env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom)) calc(8px + env(safe-area-inset-left));
-      background: rgba(249, 239, 225, 0.96);
-      box-shadow: 0 -8px 22px rgba(43, 24, 8, 0.2);
-    }
-
-    body.mode-prison.ui-mobile-landscape .mobile-tabbar {
-      background: rgba(27, 36, 52, 0.95);
-      box-shadow: 0 -8px 22px rgba(0, 0, 0, 0.38);
-      border-top-color: #425572;
-    }
-
-    body.mode-prison.ui-mobile-landscape .foot {
-      background: transparent;
-    }
-
-    body.mobile-tab-status.ui-mobile-landscape #leftPanel:not([hidden]),
-    body.mobile-tab-status.ui-mobile-landscape #rightPanel:not([hidden]),
-    body.mobile-tab-log.ui-mobile-landscape #rightPanel:not([hidden]) {
-      animation: mobilePanelIn 0.2s ease;
-    }
-
-    @keyframes mobilePanelIn {
-      0% { opacity: 0; transform: translateY(8px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    body.mode-prison.ui-mobile-landscape .mobile-tab-btn {
-      border-color: #556b90;
-      background: linear-gradient(180deg, #2f415f, #23354d);
-      color: #e7efff;
-    }
-
-    body.mode-prison.ui-mobile-landscape .mobile-tab-btn.active {
-      border-color: #6f86b4;
-      background: linear-gradient(180deg, #46618b, #344f75);
-    }
-
-    body.ui-mobile-portrait .court {
-      display: none;
-    }
-
-    body.ui-mobile-portrait .rotate-overlay {
-      display: grid;
+      .primary,
+      #nextBtn {
+        min-width: 122px;
+      }
     }
   </style>
 </head>
@@ -1972,7 +1707,7 @@
 
     <section class="body">
       <aside class="ui-panel left-panel" id="leftPanel">
-        <div class="economy tab-status">
+        <div class="economy">
           <div class="wallet">
             <strong>資金・進行状況</strong>
             <div class="money-main"><span id="moneyNum">0</span> 円</div>
@@ -1990,7 +1725,7 @@
           </div>
         </div>
 
-        <section class="cast tab-status" aria-label="登場人物">
+        <section class="cast" aria-label="登場人物">
           <article class="cast-card">
             <div class="portrait" aria-hidden="true"></div>
             <div class="cast-text"><b>裁判官 <span class="male-tag">男性</span></b><span id="castJudge">藤澤</span></div>
@@ -2009,7 +1744,7 @@
           </article>
         </section>
 
-        <div class="stats tab-status">
+        <div class="stats">
           <div class="stat">
             <strong>有罪度 (<span id="guiltNum">0</span>)</strong>
             値が高いほど厳罰に近づきます。
@@ -2032,7 +1767,7 @@
           </div>
         </div>
 
-        <section class="sentence-panel tab-status">
+        <section class="sentence-panel">
           <strong>判決詳細</strong>
           <div class="sentence-grid">
             <div class="sentence-item"><b>懲役年数</b><span id="sentenceYears">未判定</span></div>
@@ -2080,9 +1815,9 @@
           <div class="prison-caption" id="prisonCaption">牢獄フェーズ演出</div>
         </section>
 
-        <div class="choices tab-actions" id="choices"></div>
+        <div class="choices" id="choices"></div>
 
-        <div class="foot tab-actions">
+        <div class="foot">
           <button class="primary" id="startBtn">開廷する</button>
           <button id="nextBtn">次へ進む</button>
           <small id="turn"></small>
@@ -2090,7 +1825,7 @@
       </section>
 
       <aside class="ui-panel right-panel" id="rightPanel">
-        <section class="special tab-status">
+        <section class="special">
           <strong>特殊行動</strong>
           <div class="special-row">
             <button class="danger-action" id="bribeBtn">賄賂を試みる (-300円)</button>
@@ -2109,7 +1844,7 @@
           <div class="special-note" id="specialNote">各審問で1回だけ使用可能。賄賂は高リスクです。</div>
         </section>
 
-        <section class="log-panel tab-log" aria-live="polite">
+        <section class="log-panel" aria-live="polite">
           <div class="log-head">
             <span>法廷速報</span>
             <span id="logCount">記録 0件</span>
@@ -2119,20 +1854,8 @@
         </section>
       </aside>
 
-      <nav class="mobile-tabbar" id="mobileTabbar" aria-label="モバイルタブ">
-        <button id="tabActionsBtn" class="mobile-tab-btn active" data-tab="actions">行動</button>
-        <button id="tabStatusBtn" class="mobile-tab-btn" data-tab="status">状況</button>
-        <button id="tabLogBtn" class="mobile-tab-btn" data-tab="log">ログ</button>
-      </nav>
     </section>
   </main>
-
-  <div class="rotate-overlay" id="rotateOverlay" aria-hidden="true">
-    <div class="rotate-card">
-      <strong>横画面でプレイ</strong>
-      <p>スマホは横向き専用UIです。端末を回転してください。</p>
-    </div>
-  </div>
 
   <div class="cutin" id="cutinOverlay" aria-hidden="true">
     <div class="cutin-card tone-warn" id="cutinCard">
@@ -2211,11 +1934,6 @@
     const panelToolsEl = document.getElementById("panelTools");
     const toggleLeftPanelBtn = document.getElementById("toggleLeftPanelBtn");
     const toggleRightPanelBtn = document.getElementById("toggleRightPanelBtn");
-    const mobileTabbarEl = document.getElementById("mobileTabbar");
-    const tabActionsBtn = document.getElementById("tabActionsBtn");
-    const tabStatusBtn = document.getElementById("tabStatusBtn");
-    const tabLogBtn = document.getElementById("tabLogBtn");
-    const rotateOverlayEl = document.getElementById("rotateOverlay");
     const centerStageEl = document.getElementById("centerStage");
     const stageBackdropEl = document.getElementById("stageBackdrop");
     const stageJudgeEl = document.getElementById("stageJudge");
@@ -2228,14 +1946,6 @@
     const stageProsecutorLabelEl = document.querySelector("#stageProsecutor .stage-label");
     const stageWitnessLabelEl = document.querySelector("#stageWitness .stage-label");
     const stageDefendantLabelEl = document.querySelector("#stageDefendant .stage-label");
-    const tabActionSections = Array.from(document.querySelectorAll(".tab-actions"));
-    const tabStatusSections = Array.from(document.querySelectorAll(".tab-status"));
-    const tabLogSections = Array.from(document.querySelectorAll(".tab-log"));
-    const mobileTabButtons = {
-      actions: tabActionsBtn,
-      status: tabStatusBtn,
-      log: tabLogBtn
-    };
     const stageActors = {
       judge: stageJudgeEl,
       lawyer: stageLawyerEl,
@@ -2257,7 +1967,6 @@
     const LAWYER_NAME = "田中";
     const PROSECUTOR_NAME = "辻野";
     const WITNESS_NAME = "角谷";
-    const MOBILE_TABS = ["actions", "status", "log"];
     const STAGE_ASSETS = {
       backdrop: {
         url: "",
@@ -2424,13 +2133,8 @@
     function createDefaultUIState() {
       return {
         uiMode: "desktop",
-        activeMobileTab: "actions",
         panelCollapsed: createDefaultPanelCollapsed()
       };
-    }
-
-    function sanitizeMobileTab(value) {
-      return MOBILE_TABS.includes(value) ? value : "actions";
     }
 
     function sanitizePanelCollapsed(value) {
@@ -2518,13 +2222,11 @@
       const fallback = createDefaultUIState();
       return {
         uiMode: typeof loaded.uiMode === "string" ? loaded.uiMode : fallback.uiMode,
-        activeMobileTab: sanitizeMobileTab(loaded.activeMobileTab),
         panelCollapsed: sanitizePanelCollapsed(loaded.panelCollapsed)
       };
     }
 
     function saveUIState() {
-      uiState.activeMobileTab = sanitizeMobileTab(state.activeMobileTab || uiState.activeMobileTab);
       uiState.panelCollapsed = sanitizePanelCollapsed(state.panelCollapsed || uiState.panelCollapsed);
       uiState.uiMode = typeof state.uiMode === "string" ? state.uiMode : uiState.uiMode;
       saveJSON(STORAGE_KEYS.ui, uiState);
@@ -2613,76 +2315,20 @@
 
     function hydrateUIState(source = null) {
       const fallback = source && typeof source === "object" ? source : {};
-      const detectedMode = detectUiMode();
-      state.uiMode = detectedMode;
-      const preferredTab = sanitizeMobileTab(fallback.activeMobileTab || uiState.activeMobileTab);
-      state.activeMobileTab = detectedMode === "mobile-landscape" ? "actions" : preferredTab;
+      state.uiMode = detectUiMode();
       state.panelCollapsed = sanitizePanelCollapsed(fallback.panelCollapsed || uiState.panelCollapsed);
-      uiState.activeMobileTab = state.activeMobileTab;
       uiState.panelCollapsed = sanitizePanelCollapsed(state.panelCollapsed);
     }
 
     function detectUiMode() {
       const smallViewport = window.matchMedia("(max-width: 980px)").matches || window.matchMedia("(pointer: coarse)").matches;
-      if (!smallViewport) return "desktop";
-      return "mobile-landscape";
+      return smallViewport ? "mobile" : "desktop";
     }
 
     function applyTabVisibility() {
-      const mobileLandscape = state.uiMode === "mobile-landscape";
-      if (!mobileLandscape) {
-        tabActionSections.forEach((el) => { el.hidden = false; });
-        tabStatusSections.forEach((el) => { el.hidden = false; });
-        tabLogSections.forEach((el) => { el.hidden = false; });
-        centerColumnEl.hidden = false;
-        leftPanelEl.hidden = false;
-        rightPanelEl.hidden = false;
-        return;
-      }
-
-      const active = sanitizeMobileTab(state.activeMobileTab);
       centerColumnEl.hidden = false;
-      tabActionSections.forEach((el) => { el.hidden = false; });
-      tabStatusSections.forEach((el) => { el.hidden = active !== "status"; });
-      tabLogSections.forEach((el) => { el.hidden = active !== "log"; });
-
-      if (active === "actions") {
-        leftPanelEl.hidden = true;
-        rightPanelEl.hidden = true;
-      } else if (active === "status") {
-        leftPanelEl.hidden = false;
-        rightPanelEl.hidden = false;
-      } else {
-        leftPanelEl.hidden = true;
-        rightPanelEl.hidden = false;
-      }
-    }
-
-    function focusMobileTabTarget(tab) {
-      if (state.uiMode !== "mobile-landscape") return;
-      const opts = { behavior: "smooth", block: "start", inline: "nearest" };
-      if (tab === "actions") {
-        centerColumnEl.scrollIntoView(opts);
-        return;
-      }
-      if (tab === "status" && !leftPanelEl.hidden) {
-        leftPanelEl.scrollIntoView(opts);
-        return;
-      }
-      if (tab === "log" && !rightPanelEl.hidden) {
-        rightPanelEl.scrollIntoView(opts);
-      }
-    }
-
-    function updateMobileTabButtons() {
-      const active = sanitizeMobileTab(state.activeMobileTab);
-      MOBILE_TABS.forEach((tab) => {
-        const btn = mobileTabButtons[tab];
-        if (!btn) return;
-        btn.classList.toggle("active", tab === active);
-        btn.setAttribute("aria-pressed", tab === active ? "true" : "false");
-      });
-      mobileTabbarEl.setAttribute("aria-hidden", state.uiMode === "mobile-landscape" ? "false" : "true");
+      leftPanelEl.hidden = false;
+      rightPanelEl.hidden = false;
     }
 
     function applyPanelCollapsedState(persist = false) {
@@ -2698,41 +2344,23 @@
       if (persist) saveUIState();
     }
 
-    function setMobileTab(tab, persist = false) {
-      state.activeMobileTab = sanitizeMobileTab(tab);
-      document.body.classList.remove("mobile-tab-actions", "mobile-tab-status", "mobile-tab-log");
-      document.body.classList.add("mobile-tab-" + state.activeMobileTab);
-      applyTabVisibility();
-      updateMobileTabButtons();
-      setTimeout(() => {
-        focusMobileTabTarget(state.activeMobileTab);
-      }, 0);
-      if (persist) saveUIState();
-    }
-
     function setUiMode(mode, persist = false) {
-      const prevMode = state.uiMode;
-      const normalized = mode === "mobile-portrait" ? "mobile-landscape" : mode;
-      const safeMode = normalized === "mobile-landscape" ? "mobile-landscape" : "desktop";
+      const safeMode = mode === "mobile" ? "mobile" : "desktop";
       state.uiMode = safeMode;
-      if (safeMode === "mobile-landscape" && prevMode !== "mobile-landscape") {
-        state.activeMobileTab = "actions";
-      }
-      document.body.classList.remove("ui-desktop", "ui-mobile-landscape", "ui-mobile-portrait");
+      document.body.classList.remove("ui-desktop", "ui-mobile", "ui-mobile-landscape", "ui-mobile-portrait");
       document.body.classList.add("ui-" + safeMode);
-      rotateOverlayEl.setAttribute("aria-hidden", safeMode === "mobile-portrait" ? "false" : "true");
       if (safeMode !== "desktop") {
         document.body.classList.remove("pc-left-collapsed", "pc-right-collapsed");
       }
       applyPanelCollapsedState(false);
-      setMobileTab(state.activeMobileTab, false);
+      applyTabVisibility();
       if (persist) saveUIState();
     }
 
     function syncResponsiveUI(persist = false) {
       setUiMode(detectUiMode(), false);
       applyPanelCollapsedState(false);
-      setMobileTab(state.activeMobileTab, false);
+      applyTabVisibility();
       if (persist) saveUIState();
     }
 
@@ -3052,7 +2680,6 @@
 
     function persistRunSilently() {
       if (!(state.phase === "trial" && state.started && !state.finished)) return;
-      state.activeMobileTab = sanitizeMobileTab(state.activeMobileTab || uiState.activeMobileTab);
       state.panelCollapsed = sanitizePanelCollapsed(state.panelCollapsed || uiState.panelCollapsed);
       state.uiMode = detectUiMode();
       const payload = {
@@ -3157,9 +2784,6 @@
         if (payload.ui) saveJSON(STORAGE_KEYS.ui, payload.ui);
         profile = loadProfile();
         uiState = loadUIState();
-        if (detectUiMode() === "mobile-landscape") {
-          uiState.activeMobileTab = "actions";
-        }
         renderEconomy();
         hydrateUIState(state);
         syncResponsiveUI(true);
@@ -4029,7 +3653,6 @@
         awaitingAdvance: false,
         executingDeath: false,
         uiMode: "desktop",
-        activeMobileTab: "actions",
         panelCollapsed: createDefaultPanelCollapsed()
       };
       hydrateUIState(state);
@@ -4123,9 +3746,6 @@
     });
     toggleLeftPanelBtn.addEventListener("click", () => togglePanel("left"));
     toggleRightPanelBtn.addEventListener("click", () => togglePanel("right"));
-    tabActionsBtn.addEventListener("click", () => setMobileTab("actions", true));
-    tabStatusBtn.addEventListener("click", () => setMobileTab("status", true));
-    tabLogBtn.addEventListener("click", () => setMobileTab("log", true));
     window.addEventListener("resize", () => {
       syncResponsiveUI(true);
     });
@@ -4143,9 +3763,6 @@
     profile = loadProfile();
     soundEnabled = loadSoundSetting();
     uiState = loadUIState();
-    if (detectUiMode() === "mobile-landscape") {
-      uiState.activeMobileTab = "actions";
-    }
     updateSoundButton();
     renderEconomy();
     renderCast();
