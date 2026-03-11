@@ -1767,6 +1767,76 @@
         max-height: 178px;
       }
 
+      body.mode-prison .center-stage {
+        display: none;
+      }
+
+      body.mode-prison .scene {
+        min-height: 76px;
+        font-size: 0.92rem;
+        line-height: 1.5;
+      }
+
+      body.mode-prison .prison-stage {
+        padding: 8px;
+        gap: 6px;
+        border-width: 2px;
+      }
+
+      body.mode-prison .prison-cell {
+        min-height: 148px;
+      }
+
+      body.mode-prison .prison-caption {
+        font-size: 0.8rem;
+      }
+
+      body.mode-prison .fighter {
+        width: 24px;
+        height: 50px;
+        bottom: 16px;
+      }
+
+      body.mode-prison .fighter.inmate {
+        left: 18%;
+      }
+
+      body.mode-prison .fighter.guard {
+        left: 68%;
+      }
+
+      body.mode-prison .fighter::before {
+        left: 4px;
+        top: -16px;
+        width: 16px;
+        height: 16px;
+      }
+
+      body.mode-prison .fighter::after {
+        left: 10px;
+        top: 10px;
+        height: 34px;
+      }
+
+      body.mode-prison .fighter .arm {
+        width: 14px;
+        top: 18px;
+      }
+
+      body.mode-prison .fighter .leg {
+        height: 20px;
+      }
+
+      body.mode-prison .fighter-tag {
+        bottom: -16px;
+        font-size: 0.62rem;
+      }
+
+      body.mode-prison .choices button {
+        font-size: 0.92rem;
+        padding: 10px 11px;
+      }
+
       .foot {
         position: fixed;
         left: 0;
@@ -1833,6 +1903,18 @@
       .stage-defendant {
         width: 92px;
         height: 116px;
+      }
+
+      body.mode-prison .prison-cell {
+        min-height: 136px;
+      }
+
+      body.mode-prison .fighter.inmate {
+        left: 17%;
+      }
+
+      body.mode-prison .fighter.guard {
+        left: 67%;
       }
 
       .foot {
@@ -1939,7 +2021,7 @@
         </div>
         <div class="mobile-info-tools" id="mobileInfoTools" hidden>
           <button id="mobileToggleLeftBtn" class="panel-toggle" type="button">状況を表示</button>
-          <button id="mobileToggleRightBtn" class="panel-toggle" type="button">ログ/特殊を表示</button>
+          <button id="mobileToggleRightBtn" class="panel-toggle" type="button">ログを表示</button>
         </div>
 
         <section class="center-stage" id="centerStage" aria-label="法廷ステージ">
@@ -1982,7 +2064,7 @@
       </section>
 
       <aside class="ui-panel right-panel" id="rightPanel">
-        <section class="special">
+        <section class="special" id="specialPanel">
           <strong>特殊行動</strong>
           <div class="special-row">
             <button class="danger-action" id="bribeBtn">賄賂を試みる (-300円)</button>
@@ -2088,6 +2170,8 @@
     const centerColumnEl = document.getElementById("centerColumn");
     const leftPanelEl = document.getElementById("leftPanel");
     const rightPanelEl = document.getElementById("rightPanel");
+    const specialPanelEl = document.getElementById("specialPanel");
+    const rightPanelLogEl = rightPanelEl ? rightPanelEl.querySelector(".log-panel") : null;
     const panelToolsEl = document.getElementById("panelTools");
     const toggleLeftPanelBtn = document.getElementById("toggleLeftPanelBtn");
     const toggleRightPanelBtn = document.getElementById("toggleRightPanelBtn");
@@ -2486,8 +2570,23 @@
       return smallViewport ? "mobile" : "desktop";
     }
 
+    function syncSpecialPanelPlacement() {
+      if (!specialPanelEl || !centerColumnEl || !choicesEl || !rightPanelEl) return;
+      const isMobile = state.uiMode === "mobile";
+      if (isMobile) {
+        if (specialPanelEl.parentElement !== centerColumnEl) {
+          centerColumnEl.insertBefore(specialPanelEl, choicesEl);
+        }
+        return;
+      }
+      if (specialPanelEl.parentElement !== rightPanelEl) {
+        rightPanelEl.insertBefore(specialPanelEl, rightPanelLogEl || rightPanelEl.firstChild);
+      }
+    }
+
     function applyTabVisibility() {
       centerColumnEl.hidden = false;
+      syncSpecialPanelPlacement();
       const isMobile = state.uiMode === "mobile";
 
       if (!isMobile) {
@@ -2505,7 +2604,7 @@
         mobileToggleLeftBtn.textContent = mobileInfoPanel === "left" ? "状況を隠す" : "状況を表示";
       }
       if (mobileToggleRightBtn) {
-        mobileToggleRightBtn.textContent = mobileInfoPanel === "right" ? "ログ/特殊を隠す" : "ログ/特殊を表示";
+        mobileToggleRightBtn.textContent = mobileInfoPanel === "right" ? "ログを隠す" : "ログを表示";
       }
     }
 
@@ -3130,6 +3229,52 @@
       persistRunSilently();
     }
 
+    function concludeCounterSueVictory(settlementGain) {
+      const exileReward = rand(280, 460);
+      const totalGain = settlementGain + exileReward;
+      profile.money += exileReward;
+      profile.plays += 1;
+      profile.totalEarned += totalGain;
+      profile.lastVerdict = "反訴勝利: 島流し判決";
+      saveProfile();
+      renderEconomy();
+
+      state.finished = true;
+      state.started = false;
+      state.awaitingAdvance = false;
+      state.phase = "trial";
+      state.specialUsedScene = -1;
+      hideNextButton();
+      clearTransientOverlays();
+      setLocationMode("court");
+      choicesEl.innerHTML = "";
+      turnEl.textContent = "反訴勝利";
+      startBtn.disabled = false;
+      startBtn.textContent = "もう一度開廷";
+      sceneEl.classList.remove("warn", "bad");
+      sceneEl.classList.add("ok");
+      sceneEl.textContent =
+        "反訴判決: 名誉毀損の主張を全面認容。\n" +
+        "裁判官 " + JUDGE_NAME + " と検事 " + PROSECUTOR_NAME + " は更迭のうえ島流し処分。\n" +
+        "被告 亮太は無罪放免となった。";
+      setSentencePanel(
+        "被告: 無罪",
+        "南海懲戒島 (裁判官/検事)",
+        "なし",
+        "反訴全面認容。法廷側2名を懲戒処分。",
+        "なし"
+      );
+      showCutIn("法廷警備", "判決執行: 裁判官と検事を島流しへ", "ok");
+      pushLog("特別判決: 裁判官 " + JUDGE_NAME + " と検事 " + PROSECUTOR_NAME + " が島流し処分。", "ok");
+      pushLog("特別報酬を獲得: +" + formatYen(exileReward) + "円 (合計 +" + formatYen(totalGain) + "円)", "ok");
+      updateSpecialButtons();
+      try {
+        localStorage.removeItem(STORAGE_KEYS.run);
+      } catch (err) {
+        // no-op
+      }
+    }
+
     function counterSueDefamation() {
       if (!beginSpecialAction()) return;
       if (!canCounterSueNow()) {
@@ -3147,7 +3292,9 @@
         saveProfile();
         renderEconomy();
         showCutIn("被告 亮太", "反訴成功: 名誉毀損で逆転", "ok");
-        pushLog("名誉毀損で反訴成功。検事 " + PROSECUTOR_NAME + " 側に反省文命令、和解金 +" + formatYen(gain) + "円。", "ok");
+        pushLog("名誉毀損で反訴成功。和解金 +" + formatYen(gain) + "円を獲得。", "ok");
+        concludeCounterSueVictory(gain);
+        return;
       } else {
         applyEffect({ guilt: 6, trust: -5, merit: -3, suspicion: 7 });
         showCutIn("裁判官 " + JUDGE_NAME, "反訴は却下", "warn", "guard");
